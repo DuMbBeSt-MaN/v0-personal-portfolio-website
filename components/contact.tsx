@@ -4,6 +4,7 @@ import type React from "react"
 
 import { motion } from "framer-motion"
 import { useState } from "react"
+import portfolio from "@/data/portfolio.json"
 
 const MailIcon = () => (
   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -90,7 +91,7 @@ export default function Contact() {
       const response = await fetch("/api/send-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, message }),
+        body: JSON.stringify({ name, email: email, message, recipientEmail: portfolio.personal.email }),
       })
 
       const data = await response.json()
@@ -144,12 +145,11 @@ export default function Contact() {
         variants={containerVariants}
       >
         <motion.h2 className="text-4xl md:text-5xl font-bold mb-4 text-accent" variants={itemVariants}>
-          Let's Connect
+          {portfolio.contact.title}
         </motion.h2>
 
         <motion.p className="text-lg text-muted-foreground mb-12" variants={itemVariants}>
-          I'm always interested in hearing about new projects and opportunities. Feel free to reach out or download my
-          resume.
+          {portfolio.contact.subtitle}
         </motion.p>
 
         <div className="grid md:grid-cols-2 gap-12">
@@ -287,7 +287,7 @@ export default function Contact() {
           {/* Contact Info */}
           <motion.div className="space-y-4" variants={itemVariants}>
             <motion.a
-              href="mailto:skulpeace@gmail.com"
+              href={`mailto:${portfolio.personal.email}`}
               className="glass glass-hover flex items-center gap-4 p-4 rounded-lg transition-all duration-300"
               whileHover={{ x: 8 }}
             >
@@ -296,12 +296,12 @@ export default function Contact() {
               </div>
               <div>
                 <p className="text-xs text-muted-foreground font-mono uppercase tracking-widest">Email</p>
-                <p className="font-bold text-foreground">skulpeace@gmail.com</p>
+                <p className="font-bold text-foreground">{portfolio.personal.email}</p>
               </div>
             </motion.a>
 
             <motion.a
-              href="https://www.linkedin.com/in/rohan-chandrasekar-ba45a228a"
+              href={portfolio.personal.linkedin}
               target="_blank"
               rel="noopener noreferrer"
               className="glass glass-hover flex items-center gap-4 p-4 rounded-lg transition-all duration-300"
@@ -317,7 +317,7 @@ export default function Contact() {
             </motion.a>
 
             <motion.a
-              href="https://github.com/DuMbBeSt-MaN"
+              href={portfolio.personal.github}
               target="_blank"
               rel="noopener noreferrer"
               className="glass glass-hover flex items-center gap-4 p-4 rounded-lg transition-all duration-300"
@@ -334,7 +334,7 @@ export default function Contact() {
 
             {/* Resume Download */}
             <motion.a
-              href="/resume.pdf"
+              href={portfolio.personal.resume}
               download
               className="glass glass-hover flex items-center gap-4 p-4 rounded-lg transition-all duration-300"
               whileHover={{ x: 8 }}

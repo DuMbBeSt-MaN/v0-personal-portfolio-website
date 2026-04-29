@@ -1,39 +1,11 @@
 "use client"
 
 import { motion } from "framer-motion"
+import portfolio from "@/data/portfolio.json"
 
 export default function Experience() {
-  const experience = [
-    {
-      company: "Microsoft Innovations Club VITC",
-      role: "Web Developer",
-      period: "Oct 2025 – Present",
-      description: "Building innovative web solutions and leading development initiatives.",
-      skills: ["Web Development", "React", "Full Stack"],
-    },
-    {
-      company: "Open Source Programming Club VITC",
-      role: "Design Lead",
-      period: "Jun 2025 – Present",
-      description: "Leading design direction and team collaboration on open source projects.",
-      skills: ["Team Leadership", "Graphic Design", "UI/UX", "Design Systems"],
-    },
-  ]
-
-  const education = [
-    {
-      institution: "Vellore Institute of Technology (VIT Chennai)",
-      degree: "B.Tech, Computer Science & Engineering",
-      period: "Jun 2024 – Jul 2028",
-      location: "Chennai, India",
-    },
-    {
-      institution: "Sri Chaitanya College of Education",
-      degree: "Senior Secondary (XII)",
-      period: "May 2022 – Jun 2024",
-      location: "India",
-    },
-  ]
+  const experience = portfolio.experience
+  const education = portfolio.education
 
   const containerVariants = {
     hidden: { opacity: 0 },
