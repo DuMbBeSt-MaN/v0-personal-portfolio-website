@@ -42,12 +42,47 @@ const FileIcon = () => (
 export default function Contact() {
   const [email, setEmail] = useState("")
   const [message, setMessage] = useState("")
+  const [name, setName] = useState("")
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [validationErrors, setValidationErrors] = useState<{ [key: string]: string }>({})
+  const [focused, setFocused] = useState<string | null>(null)
+
+  const validateForm = () => {
+    const errors: { [key: string]: string } = {}
+
+    if (!name.trim()) {
+      errors.name = "Name is required"
+    } else if (name.trim().length < 2) {
+      errors.name = "Name must be at least 2 characters"
+    }
+
+    if (!email.trim()) {
+      errors.email = "Email is required"
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errors.email = "Please enter a valid email address"
+    }
+
+    if (!message.trim()) {
+      errors.message = "Message is required"
+    } else if (message.trim().length < 10) {
+      errors.message = "Message must be at least 10 characters"
+    } else if (message.length > 1000) {
+      errors.message = "Message must be less than 1000 characters"
+    }
+
+    setValidationErrors(errors)
+    return Object.keys(errors).length === 0
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!validateForm()) {
+      return
+    }
+
     setLoading(true)
     setError("")
 
@@ -55,16 +90,18 @@ export default function Contact() {
       const response = await fetch("/api/send-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, message }),
+        body: JSON.stringify({ name, email, message }),
       })
 
       const data = await response.json()
 
       if (data.success) {
         setSubmitted(true)
+        setName("")
         setEmail("")
         setMessage("")
-        setTimeout(() => setSubmitted(false), 3000)
+        setValidationErrors({})
+        setTimeout(() => setSubmitted(false), 4000)
       } else {
         setError(data.error || "Failed to send message")
       }
@@ -75,6 +112,8 @@ export default function Contact() {
       setLoading(false)
     }
   }
+
+  const isFormValid = name.trim() && email.trim() && message.trim() && Object.keys(validationErrors).length === 0
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -116,37 +155,132 @@ export default function Contact() {
         <div className="grid md:grid-cols-2 gap-12">
           {/* Contact Form */}
           <motion.form onSubmit={handleSubmit} className="space-y-4" variants={itemVariants}>
+            {/* Name Field */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-sm text-primary font-mono uppercase tracking-widest">Name</label>
+                <span className={`text-xs font-mono ${name.length > 0 ? "text-primary/60" : "text-muted-foreground"}`}>
+                  {name.length}/50
+                </span>
+              </div>
+              <input
+                type="text"
+                placeholder="Your name"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value.slice(0, 50))
+                  if (validationErrors.name) {
+                    setValidationErrors({ ...validationErrors, name: "" })
+                  }
+                }}
+                onFocus={() => setFocused("name")}
+                onBlur={() => setFocused(null)}
+                maxLength={50}
+                className={`w-full px-4 py-3 bg-input border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none transition-all duration-300 ${
+                  validationErrors.name
+                    ? "border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500/50"
+                    : "border-border hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/50"
+                }`}
+              />
+              {validationErrors.name && <p className="text-red-500 text-xs mt-1 font-mono">{validationErrors.name}</p>}
+            </div>
+
+            {/* Email Field */}
             <div>
               <label className="block text-sm text-primary font-mono uppercase tracking-widest mb-2">Email</label>
               <input
                 type="email"
                 placeholder="your@email.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full px-4 py-3 bg-input border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all duration-300 hover:border-primary/50"
+                onChange={(e) => {
+                  setEmail(e.target.value)
+                  if (validationErrors.email) {
+                    setValidationErrors({ ...validationErrors, email: "" })
+                  }
+                }}
+                onFocus={() => setFocused("email")}
+                onBlur={() => setFocused(null)}
+                className={`w-full px-4 py-3 bg-input border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none transition-all duration-300 ${
+                  validationErrors.email
+                    ? "border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500/50"
+                    : "border-border hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/50"
+                }`}
               />
+              {validationErrors.email && <p className="text-red-500 text-xs mt-1 font-mono">{validationErrors.email}</p>}
             </div>
+
+            {/* Message Field */}
             <div>
-              <label className="block text-sm text-primary font-mono uppercase tracking-widest mb-2">Message</label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-sm text-primary font-mono uppercase tracking-widest">Message</label>
+                <span className={`text-xs font-mono ${message.length > 0 ? "text-primary/60" : "text-muted-foreground"}`}>
+                  {message.length}/1000
+                </span>
+              </div>
               <textarea
                 placeholder="Tell me about your project..."
                 value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                required
+                onChange={(e) => {
+                  setMessage(e.target.value.slice(0, 1000))
+                  if (validationErrors.message) {
+                    setValidationErrors({ ...validationErrors, message: "" })
+                  }
+                }}
+                onFocus={() => setFocused("message")}
+                onBlur={() => setFocused(null)}
+                maxLength={1000}
                 rows={5}
-                className="w-full px-4 py-3 bg-input border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all duration-300 hover:border-primary/50 resize-none"
+                className={`w-full px-4 py-3 bg-input border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none transition-all duration-300 resize-none ${
+                  validationErrors.message
+                    ? "border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500/50"
+                    : "border-border hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary/50"
+                }`}
               />
+              {validationErrors.message && (
+                <p className="text-red-500 text-xs mt-1 font-mono">{validationErrors.message}</p>
+              )}
             </div>
-            {error && <p className="text-red-500 text-sm font-mono">{error}</p>}
+
+            {error && (
+              <motion.div
+                className="p-3 bg-red-500/10 border border-red-500/50 rounded-lg"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <p className="text-red-500 text-sm font-mono">{error}</p>
+              </motion.div>
+            )}
+
+            {submitted && (
+              <motion.div
+                className="p-3 bg-primary/10 border border-primary/50 rounded-lg"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <p className="text-primary text-sm font-mono">✓ Message sent successfully! I'll get back to you soon.</p>
+              </motion.div>
+            )}
+
             <motion.button
               type="submit"
-              disabled={loading}
-              className="w-full px-6 py-3 bg-gradient-to-r from-primary to-accent text-background rounded-lg font-bold uppercase tracking-wide text-sm transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-              whileHover={{ scale: 1.02, boxShadow: "0 0 30px rgba(0, 217, 255, 0.3)" }}
-              whileTap={{ scale: 0.98 }}
+              disabled={loading || !isFormValid}
+              className={`w-full px-6 py-3 rounded-lg font-bold uppercase tracking-wide text-sm transition-all duration-300 ${
+                isFormValid
+                  ? "bg-gradient-to-r from-primary to-accent text-background hover:shadow-lg"
+                  : "bg-muted opacity-50 text-muted-foreground cursor-not-allowed"
+              }`}
+              whileHover={isFormValid ? { scale: 1.02 } : {}}
+              whileTap={isFormValid ? { scale: 0.98 } : {}}
             >
-              {loading ? "Sending..." : submitted ? "✓ Message Sent!" : "Send Message"}
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="animate-spin">⟳</span> Sending...
+                </span>
+              ) : submitted ? (
+                "✓ Message Sent!"
+              ) : (
+                "Send Message"
+              )}
             </motion.button>
           </motion.form>
 
