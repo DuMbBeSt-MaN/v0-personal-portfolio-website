@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion"
 import { useState } from "react"
+import portfolio from "@/data/portfolio.json"
 
 const GithubIcon = () => (
   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -34,30 +35,7 @@ interface Project {
 export default function Projects() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
 
-  const projects: Project[] = [
-    {
-      id: "1",
-      title: "AI Mood Based Playlist Generator",
-      description: "Generates personalized playlists based on detected mood using AI algorithms and music APIs.",
-      fullDescription:
-        "An intelligent system that analyzes user mood through various inputs and recommends personalized music playlists. Features real-time mood detection, integration with popular music streaming APIs, and machine learning algorithms for accurate recommendations.",
-      tech: ["Python", "TensorFlow", "React", "Node.js", "Spotify API", "ML"],
-      github: "https://github.com/DuMbBeSt-MaN/AI-mood-based-song-recommender.git",
-      demo: "https://ai-mood-based-song-recommender-yn86.vercel.app/",
-      image: "/ai-mood-based-playlist-generator-interface.jpg",
-    },
-    {
-      id: "2",
-      title: "Faculty Slot Allocation Website",
-      description: "Streamlined system for managing faculty schedules and slot allocations efficiently.",
-      fullDescription:
-        "A comprehensive database-driven web application designed to optimize faculty scheduling and room allocation. Features real-time availability tracking, conflict detection, and automated scheduling algorithms to maximize resource utilization.",
-      tech: ["React", "Node.js", "PostgreSQL", "Express", "TailwindCSS"],
-      github: "https://github.com/Hari-ghm/data_base_project.git",
-      demo: "#",
-      image: "/faculty-scheduling-dashboard-interface.jpg",
-    },
-  ]
+  const projects: Project[] = portfolio.projects as Project[]
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -102,7 +80,7 @@ export default function Projects() {
         variants={containerVariants}
       >
         <motion.h2 className="text-4xl md:text-5xl font-bold mb-12 text-accent" variants={itemVariants}>
-          Featured Projects
+          {portfolio.about.title === "About Me" ? "Featured Projects" : "Projects"}
         </motion.h2>
 
         <div className="grid md:grid-cols-2 gap-8">

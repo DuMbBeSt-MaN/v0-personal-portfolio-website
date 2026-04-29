@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import * as THREE from "three"
+import portfolio from "@/data/portfolio.json"
 
 // Typewriter hook for animated text
 const useTypewriter = (text: string, speed = 50) => {
@@ -31,7 +32,7 @@ export default function Hero() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
-  const { displayedText: typewriterText, isComplete } = useTypewriter("Igniting Innovation", 60)
+  const { displayedText: typewriterText, isComplete } = useTypewriter(portfolio.personal.headline, 60)
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -136,8 +137,8 @@ export default function Hero() {
 
   return (
     <section id="home" className="relative min-h-screen flex items-center overflow-hidden pt-20">
-      {/* 3D Canvas */}
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />
+      {/* 3D Canvas - Hidden to remove oval background */}
+      {/* <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" /> */}
 
       {/* Background Effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -167,10 +168,10 @@ export default function Hero() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.1, duration: 0.8 }}
           >
-            <h1 className="text-5xl md:text-6xl font-bold text-accent mb-2">Rohan </h1>
+            <h1 className="text-5xl md:text-6xl font-bold text-accent mb-2">{portfolio.personal.name} </h1>
             <motion.div
-              className="h-1 w-24 bg-gradient-to-r from-primary to-accent rounded"
-              animate={{ x: [0, 8, 0] }}
+              className="h-1 w-64 bg-gradient-to-r from-primary to-accent rounded overflow-hidden"
+              animate={{ x: [0, 80, 0] }}
               transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
             />
           </motion.div>
@@ -183,7 +184,7 @@ export default function Hero() {
             transition={{ delay: 0.2, duration: 0.8 }}
           >
             {typewriterText}
-            {!isComplete && <span className="inline-block w-1 h-12 bg-primary animate-blink" />}
+            {!isComplete && <span className="inline-block w-2 h-12 bg-primary animate-blink" />}
           </motion.h2>
 
           {/* Tagline */}
@@ -193,7 +194,7 @@ export default function Hero() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.8 }}
           >
-            CS Sophomore @ VIT Chennai | Full-Stack Developer @ MIC | AI/ML Explorer | Design Lead @ OSPC
+            {portfolio.personal.bio}
           </motion.p>
 
           {/* Subheading */}
@@ -203,7 +204,7 @@ export default function Hero() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6, duration: 0.8 }}
           >
-            Shaping the Future of Tech
+            {portfolio.personal.tagline}
           </motion.h3>
 
           {/* LinkedIn Link */}
@@ -215,7 +216,7 @@ export default function Hero() {
           >
             Explore more on my{" "}
             <a
-              href="https://www.linkedin.com/in/rohan-chandrasekar-ba45a228a"
+              href={portfolio.personal.linkedin}
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary hover:text-accent transition-colors hover:underline"

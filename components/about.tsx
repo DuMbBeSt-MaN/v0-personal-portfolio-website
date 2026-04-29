@@ -2,20 +2,11 @@
 
 import { motion } from "framer-motion"
 import { useState, useEffect } from "react"
+import portfolio from "@/data/portfolio.json"
 
 export default function About() {
-  const skills = {
-    languages: ["JavaScript", "TypeScript", "Python", "SQL", "C++", "HTML/CSS"],
-    frameworks: ["React", "Next.js", "Vite", "TailwindCSS", "Framer Motion", "Three.js"],
-    tools: ["Git", "Docker", "VS Code", "Figma", "Vercel", "Webpack"],
-  }
-
-  const taglines = [
-    { text: "Web Developer", article: "a" },
-    { text: "AI/ML Explorer", article: "an" },
-    { text: "Design Lead", article: "a" },
-    { text: "Open Source Contributor", article: "an" },
-  ]
+  const skills = portfolio.about.skills
+  const taglines = portfolio.about.taglines
   const [currentTagline, setCurrentTagline] = useState(0)
 
   useEffect(() => {
@@ -68,7 +59,7 @@ export default function About() {
         variants={containerVariants}
       >
         <motion.h2 className="text-4xl md:text-5xl font-bold mb-4 text-accent" variants={itemVariants}>
-          About Me
+          {portfolio.about.title}
         </motion.h2>
 
         <motion.div className="mb-8 flex items-baseline gap-3" variants={itemVariants}>
@@ -89,9 +80,7 @@ export default function About() {
           className="text-base md:text-lg text-muted-foreground max-w-3xl mb-12 leading-relaxed"
           variants={itemVariants}
         >
-          Passionate about building elegant solutions that combine design and functionality. Currently exploring AI/ML
-          applications while leading design initiatives at OSPC and developing at Microsoft Innovations Club. Committed
-          to open source and continuously pushing the boundaries of web development.
+          {portfolio.about.description}
         </motion.p>
 
         <div className="grid md:grid-cols-3 gap-8 mb-12">
@@ -121,7 +110,7 @@ export default function About() {
         </div>
 
         <motion.div className="flex gap-3 flex-wrap" variants={itemVariants}>
-          {["Full-Stack", "UI/UX", "Performance", "Scalability"].map((tag, index) => (
+          {portfolio.about.badges.map((tag, index) => (
             <motion.span
               key={tag}
               className="px-4 py-2 glass rounded-lg text-sm text-primary border border-primary/50 font-mono transition-all duration-300 cursor-pointer"
