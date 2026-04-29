@@ -136,8 +136,8 @@ export default function Hero() {
 
   return (
     <section id="home" className="relative min-h-screen flex items-center overflow-hidden pt-20">
-      {/* 3D Canvas */}
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />
+      {/* 3D Canvas - Hidden to remove oval background */}
+      {/* <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" /> */}
 
       {/* Background Effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -169,8 +169,8 @@ export default function Hero() {
           >
             <h1 className="text-5xl md:text-6xl font-bold text-accent mb-2">Rohan </h1>
             <motion.div
-              className="h-1 w-24 bg-gradient-to-r from-primary to-accent rounded"
-              animate={{ x: [0, 8, 0] }}
+              className="h-1 w-64 bg-gradient-to-r from-primary to-accent rounded overflow-hidden"
+              animate={{ x: [0, 80, 0] }}
               transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
             />
           </motion.div>
@@ -183,7 +183,7 @@ export default function Hero() {
             transition={{ delay: 0.2, duration: 0.8 }}
           >
             {typewriterText}
-            {!isComplete && <span className="inline-block w-1 h-12 bg-primary animate-blink" />}
+            {!isComplete && <span className="inline-block w-2 h-12 bg-primary animate-blink" />}
           </motion.h2>
 
           {/* Tagline */}
